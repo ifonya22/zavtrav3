@@ -1,0 +1,8 @@
+prefix=/home/kostya/catkin_ws/install
+
+Name: zavtrav3
+Description: Description of zavtrav3
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

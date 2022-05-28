@@ -1,0 +1,12 @@
+<launch>
+    <node pkg="zavtrav3" name="smotrim" type="smotrim.py"/>
+    <node pkg="zavtrav3" name="znaki" type="znaki.py"/>
+    <node pkg="zavtrav3" name="parkovochka" type="parkovochka.py"/>
+    <node pkg="zavtrav3" name="poehali" type="poehali.py"/>
+    <node pkg="zavtrav3" name="bar_detect" type="bar_detect.py"/>
+    <node pkg="zavtrav3" name="stop_bar" type="stop_bar.py"/>
+    <node pkg="zavtrav3" name="traffic_light_controller" type="traffic_light_controller.py"/>
+    <node pkg="zavtrav3" name="traffic_light_detector" type="traffic_light_detector.py"/>
+    <node pkg="zavtrav3" name="tunnel_start" type="tunnel_start.py"/>
+    
+</launch>
