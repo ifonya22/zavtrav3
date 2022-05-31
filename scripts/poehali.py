@@ -62,13 +62,15 @@ class LineController:
 
 
     def errorMininimazer(self, error):
-        
+        Kd = 0.0025
+        Kp = 0.00321
+
         if(self.move_flag == True):
             twist = Twist()
             self.integral = self.integral + 0.00005*error.data #0.000005*error.data
-            self.differential = 0.001*error.data
-            self.proportional = 0.02 * error.data #0.025
-            up = self.proportional +  self.differential + self.integral
+            self.differential = Kd * error.data
+            self.proportional = Kp * error.data #0.025
+            up = self.proportional +  self.differential #+ self.integral
             twist.angular.z = up
             #twist.linear.x = (0.22 - 0.09*abs(up)) #0.09
             twist.linear.x = (0.22 - 0.09*abs(up))
