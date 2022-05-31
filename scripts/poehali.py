@@ -51,6 +51,7 @@ class LineController:
         self.cmd_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
         self.integral = 0
         self.proportional = 0
+        self.differential = 0
         self.move_flag = True
         rospy.Subscriber('/line_error', Float64,  self.error_callback)
 
@@ -64,11 +65,13 @@ class LineController:
         
         if(self.move_flag == True):
             twist = Twist()
-            self.integral =self.integral + 0.000005*error.data #0.000005*error.data
-            self.proportional = 0.01*error.data
-            up = (self.proportional+self.integral)
-            twist.angular.z = up*2
-            twist.linear.x = (0.22 - 0.09*abs(up)) #0.09
+            self.integral = self.integral + 0.00005*error.data #0.000005*error.data
+            self.differential = 0.001*error.data
+            self.proportional = 0.02 * error.data #0.025
+            up = self.proportional +  self.differential + self.integral
+            twist.angular.z = up
+            #twist.linear.x = (0.22 - 0.09*abs(up)) #0.09
+            twist.linear.x = (0.22 - 0.09*abs(up))
             self.cmd_pub.publish(twist)
     
     def errorFlag(self, data):

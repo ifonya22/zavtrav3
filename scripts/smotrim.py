@@ -82,6 +82,8 @@ class LineChecker:
                             stop_flag = True
                         jold = j
                         break
+            for i in range(len(point_arr)/2):
+                point_arr.pop()
             if(len(point_arr) > 0):
                 point_before = point_arr[0]
                 for point in point_arr:
@@ -106,17 +108,21 @@ class LineChecker:
         res = cv2.bitwise_and(img, img, mask = mask)
         fraction_num = np.count_nonzero(mask)
         point_arr = []
+        pix_num0 = []
+        pix_num1 = []
         stop_flag = False
         if fraction_num > 50:
             k = 0
             jold = 0
             # last param we can change
-            for i in range(mask.shape[0]-1,0,-20):
+            for i in range(mask.shape[0]-1,0,-20): #-20
                 if stop_flag == True:
                     break
-                for j in range(mask.shape[1]-1,0,-20):
+                for j in range(mask.shape[1]-1,0,-20):  #-20
                     if mask[i,j] > 0:
                         point_arr.append([j,i])
+                        pix_num0.append(j)
+                        pix_num1.append(i)
                         k+=1
                         # we can change this param
                         if abs(j-jold) > 80 and k > 1:
@@ -124,6 +130,10 @@ class LineChecker:
                             stop_flag = True
                         jold = j
                         break
+            pix_def = []
+            for i in range(int(len(point_arr)/1.5)):
+                point_arr.pop()
+                
             if len(point_arr) > 0:
                 point_before = point_arr[0]
                 for point in point_arr:
@@ -132,7 +142,142 @@ class LineChecker:
         return res, point_arr
 
 
+    def calculate_error1(self, yellow_array, white_array):
+        
+        error_yell = 0
+        error_white = 0
+        weight = 0
+        i = 1
+        for yel in yellow_array:
+            #when yel[2] = 600 then weight = 0 and if yel[2] = 0 wheight = 1
+            weight = yel[0]*0.0017 + 1
+            error_yell = weight*(30 - yel[0]) + error_yell
+            i+=1
+        error_yell = error_yell/i
+        i=1
+
+        for white in white_array:
+            weight = white[0]*0.0017 + 1
+            error_white = weight*(300 - white[0]) + error_white
+            i+=1
+        error_white = error_white/i
+        print("white "+ str(error_white) + " yellow "+ str(error_yell))
+        if error_white < 30:
+            return error_yell
+        elif error_yell < 30:
+            return error_white
+        else:
+            return (error_white + error_yell)/2
+
     def calculate_error(self, yellow_array, white_array):
+        
+        ideal_traj = (342/2)
+        i = 1
+        error = 0
+        traj= 0
+       # weight = 0
+        yel0 = 0
+        error_yell = 0
+        white0 = 0
+        error_white = 0
+        weight = 1
+        whites = []
+        for yel in yellow_array:
+            #when yel[2] = 600 then weight = 0 and if yel[2] = 0 wheight = 1
+            yel0 = yel[0]
+                       
+            #if yel[0]== 0:
+            #    weight = 30*0.0017 + 1
+           #     error_yell = weight*30 + error_yell
+           # else:
+            weight = yel[0]*0.08 + 1 #0.0017
+            error_yell = weight*yel[0] + error_yell
+            #weight = yel[0]*0.0017 + 1
+           # error_yell = weight*(yel[0]) + error_yell
+            i+=1
+        error_yell = error_yell/i
+
+        i=1
+
+    
+
+
+        for white in white_array:
+            white0 = white[0]
+           
+            #if white[0]== 0:
+           #     weight = 300*0.0017 + 1
+          #      error_white = weight*300 + error_white
+           # else:
+            
+            weight = white[0]*0.0017 + 1 #0.0017
+            error_white = weight*white[0] + error_white
+            i+=1
+        error_white = error_white/i
+
+        #traj = (yel0+white0)/2
+
+        traj = (error_yell+error_white)/2
+        if white0 == 0:
+            #traj = yel0*2
+
+            traj = yel0 + yel0/2
+        elif yel0 == 0:
+            #traj = error_white/2
+            traj =  error_white - white0/2 #error_white/2
+        else: 
+            traj = (error_yell+error_white)/2
+            ideal_traj = (342/2)
+
+        #traj = (error_yell+error_white)/2
+
+
+        '''if white0 == 0:
+            traj = yel0*2
+
+            ideal_traj = ideal_traj+yel0*2
+        elif yel0 == 0:
+            traj = error_white/2
+            ideal_traj = ideal_traj - error_white
+        else: 
+            traj = (yel0+error_white)/2
+            ideal_traj = (330/2)'''
+
+        '''   traj = (error_yell+error_white)/2
+        #if white0 != 0:
+          #  whites.append(white0)
+        if white0 == 0:
+           # traj = error_yell*2
+          #  white0 = whites[-1]
+            #traj = (yel0+white0)/2
+            #ideal_traj = ideal_traj+yel0*2
+            ideal_traj = ideal_traj - 35 #yel0/2.5 
+        elif yel0 == 0:
+           # traj = error_white/3
+            
+            ideal_traj = ideal_traj + 35
+
+        else: 
+            #traj = (error_yell+error_white)/2
+            ideal_traj = (342/2)
+            traj = (error_yell+error_white)/2'''
+
+            
+        #error =  ((330/2)-traj)
+        error =  (ideal_traj-traj)
+        #ideal_traj = (342/2)
+        #error = error/(i+1)
+        print ('yellow', yel0)
+        print ('white', white0)
+        print ('error_yell', error_yell)
+        print ('error_white', error_white)
+        print ("realnaya ", traj)
+        print ("idealnyaya ", ideal_traj)
+        print ("oshibka", error)
+        return error
+
+
+    def calculate_error2(self, yellow_array, white_array):
         
         error_yell = 0
         error_white = 0
@@ -156,6 +301,8 @@ class LineChecker:
             return error_white
         else:
             return (error_white + error_yell)/2
+        
+        
         
 
     def image_transform(self, img):
@@ -202,8 +349,11 @@ class LineChecker:
         cv_image_homography = cv2.fillPoly(cv_image_homography, [triangle1, triangle2], black)
 
         im = PIL.Image.fromarray(img)    
-        area = (0,160, 320,240) 
+        area = (0,155, 320,240) 
         im = im.crop(area) 
+        im = im.resize((320,240))
+        #area = (300,240, 320,240) 
+        #im = im.crop()
         #im = im.resize((320,240))
         im = np.array(im)
         #im = cv2.cvtColor(np.array(im), cv2.COLOR_RGB2BGR)
