@@ -62,7 +62,11 @@ class LineController:
 
 
     def errorMininimazer(self, error):
+<<<<<<< Updated upstream
         Kd = 0.0039
+=======
+        Kd = 0.0045#0.0039
+>>>>>>> Stashed changes
         Kp = 0.00321
         Ki = 0.00001
         if(self.move_flag == True):

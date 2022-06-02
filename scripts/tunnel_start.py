@@ -51,6 +51,7 @@ def sign(data):
     else:
         return -1
 
+<<<<<<< Updated upstream
 def error_handler(msg):
     if msg.data > 0:
         pub_line_move = rospy.Publisher('line_move_flag', Bool, queue_size=1)
@@ -58,6 +59,8 @@ def error_handler(msg):
         a=True
         pub_line_move.publish(a)
 
+=======
+>>>>>>> Stashed changes
 def in_tunnel_go():
     global ranges
     vel_x = 0.12
@@ -72,6 +75,20 @@ def in_tunnel_go():
                 vel_x = -0.09
                 vel_z = 0.4        
     pub_velocity(vel_x, vel_z, 0.1)
+<<<<<<< Updated upstream
+
+
+=======
+    
+def error_handler(msg):
+    if msg.data > 0:
+        pub_line_move = rospy.Publisher('line_move_flag', Bool, queue_size=1)
+        a = Bool()
+        a=True
+        pub_line_move.publish(a)
+>>>>>>> Stashed changes
+
+
 
 
 
