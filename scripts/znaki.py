@@ -10,6 +10,8 @@ import os
 from time import sleep
 from std_msgs.msg import String
 
+#global sift
+
 pub_image = rospy.Publisher('sign_image', Image, queue_size=1)
 pub_sign = rospy.Publisher('sign', String, queue_size=1)
 cvBridge = CvBridge()
@@ -20,7 +22,7 @@ search_params = dict(checks = 50)
 flann = cv2.FlannBasedMatcher(index_params, search_params)
 
 def cbImageProjection(data):
-    global kp_ideal, des_ideal, sift, counter, flann
+    global kp_ideal, des_ideal, counter, flann
     # drop the frame to 1/5 (6fps) because of the processing speed
     #if counter % 3 != 0:
    #     counter += 1
@@ -76,6 +78,7 @@ def find_mse(arr1, arr2):
     return sum_err
 
 def standart_signs():
+    global sift
     dir_path = os.path.dirname(os.path.realpath(__file__))
     #here maybe mistake
     #dir_path = dir_path.replace('autorace_ws/src', 'robotics_for_300_bucks_pkg/')
