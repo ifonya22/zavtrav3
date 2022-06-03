@@ -5,7 +5,7 @@ from time import sleep
 from std_msgs.msg import  String, Bool
 from geometry_msgs.msg import Twist
 light = False
-
+cnt = 0 
 def cb_traffic_light(data):
     global light
     if(data.data == "yellow" or data.data == "red"):
@@ -19,19 +19,29 @@ def pub_velocity(x, z, time):
     for i in range(0, int(time*10)):
         vel.linear.x = x
         vel.angular.z = z
+        #vel.angular.z = 0
+
         pub_vel.publish(vel)
         rospy.sleep(0.1)
 
 def do_traffic_light():
-    global light
+    global light, cnt
+    
     pub_line_move = rospy.Publisher('line_move_flag', Bool, queue_size=1)
     flag_move_line = Bool()
     flag_move_line.data = False
     rospy.sleep(0.1)
     pub_line_move.publish(flag_move_line)
     print("published stop msg")
+   # while( light == True):
+     #   pub_velocity(0, 0, 0.1)
+    
     while( light == True):
+       
         pub_velocity(0, 0, 0.1)
+        cnt += 1
+        if cnt >= 0:
+            light == False
     flag_move_line.data = True
     pub_line_move.publish(flag_move_line)
 

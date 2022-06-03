@@ -15,13 +15,13 @@ def pub_velocity(x, z, time):
     vel = Twist()
     for i in range(0, int(time*10)):
         vel.linear.x = x
-        vel.angular.z = z
+        #vel.angular.z = z
+        vel.angular.z = 0
         pub_vel.publish(vel)
         rospy.sleep(0.1)
 
 def do_stop():
     pub_line_move = rospy.Publisher('line_move_flag', Bool, queue_size=1)
-    
     flag_move_line = Bool()
     flag_move_line.data = False
 
@@ -33,13 +33,19 @@ def do_stop():
         pub_velocity(i/100,0,0.2)
     while stop_bar == True:
         pub_velocity(0,0,0.1)
-    flag_dont_move_line = Bool()
-    pub_velocity(0.08,0, 0.4)
-    flag_move_line.data = True
+
+        
+    
+    pub_velocity(0.08,0,0.6)
+ 
+    #pub_velocity(0.08,0, 0.4)
+    #flag_dont_move_line = Bool()
+
+    #flag_move_line.data = True
     
     #flag_dont_move_line.data = True
     #pub_line_dont_move.publish(flag_dont_move_line)
-    pub_line_move.publish(flag_move_line)
+    #pub_line_move.publish(flag_move_line)
     #pub_velocity(0.2,0,0)
 
    

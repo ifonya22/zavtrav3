@@ -169,6 +169,66 @@ class LineChecker:
         else:
             return (error_white + error_yell)/2
 
+    def calculate_error_old1(self, yellow_array, white_array):
+        ideal_white = 280
+        if len(white_array) != 0:
+            return ideal_white - white_array[-1][0]
+        else:
+            ideal_yellow = 15
+            return ideal_yellow - yellow_array[-1][0] 
+
+    def calculate_error_1(self, yellow_array, white_array):
+        ideal_white = 280
+        #if len(white_array) != 0 and len(yellow_array) != 0:
+        #    return (165 - (((white_array[-1][0]* (white_array[-1][0] * 0.0017 + 1))+(yellow_array[-1][0])* (yellow_array[-1][0] * 0.08 + 1)))/2)
+        if len(white_array) != 0 and len(yellow_array) != 0:
+            return 165 - (white_array[-1][0]+yellow_array[-1][0])/2
+        if len(white_array) != 0:
+            return ideal_white - white_array[-1][0] * (white_array[-1][0] * 0.0017 + 1)
+        elif len(yellow_array) != 0:
+            ideal_yellow = 15
+            return ideal_yellow + yellow_array[-1][0] * (yellow_array[-1][0] * 0.08 + 1)
+        
+            
+
+        
+
+        # try:
+        #     yel0 = yellow_array[-1][0]
+        #     weight = yel0 * 0.08 + 1
+        #     error_yell = weight * yel0 + error_yell
+        #     error_yell = error_yell/len(yellow_array)
+        # except:
+        #     yel0 = 0
+        #     error_yell = 0
+
+        # try:
+        #     white0 = white_array[-1][0]
+        #     weight = white0 * 0.0017 + 1
+        #     error_white = weight * white0 + error_white
+        #     error_white = error_white / len(white_array)
+        # except:
+        #     white0 = 0
+        #     error_white = 0
+
+        # traj = (error_yell+error_white)/2
+        
+        # if white0 == 0:
+        #     traj = error_yell + yel0/2
+
+        # elif yel0 == 0:
+        #     traj =  error_white - white0/2 
+
+        # else: 
+        #     traj = (error_yell+error_white)/2
+            
+        # ideal_traj = 342/2   
+        # print(traj, error_yell, error_white)
+        # print(yellow_array)
+        # print(white_array)
+        # return ideal_traj-traj
+
+
     def calculate_error(self, yellow_array, white_array):
         
         ideal_traj = (342/2)
@@ -190,18 +250,22 @@ class LineChecker:
             #    weight = 30*0.0017 + 1
            #     error_yell = weight*30 + error_yell
            # else:
-            weight = yel[0]*0.08 + 1 #0.0017
+            weight = yel[0]*0.082 + 1 #0.0017
             error_yell = weight*yel[0] + error_yell
             #weight = yel[0]*0.0017 + 1
            # error_yell = weight*(yel[0]) + error_yell
             i+=1
         error_yell = error_yell/i
 
+        # try:
+        #     yel0 = yellow_array[-1][0]
+        #     weight = yel0 * 0.08 + 1
+        #     error_yell = weight * yel0 + error_yell
+        #     error_yell = error_yell/len(yellow_array)
+        # except:
+        #     error_yell = 0
+
         i=1
-
-    
-
-
         for white in white_array:
             white0 = white[0]
            
@@ -210,21 +274,32 @@ class LineChecker:
           #      error_white = weight*300 + error_white
            # else:
             
-            weight = white[0]*0.0017 + 1 #0.0017
+            weight = white[0]*0.0013 + 1 #0.0017
             error_white = weight*white[0] + error_white
             i+=1
         error_white = error_white/i
 
-        #traj = (yel0+white0)/2
-
+        # try:
+        #     white0 = white_array[-1][0]
+        #     weight = white0 * 0.0017 + 1
+        #     error_white = weight * white0 + error_white
+        #     error_white = error_white / len(white_array)
+        # except:
+        #     error_white = 0
+        
         traj = (error_yell+error_white)/2
         if white0 == 0:
             #traj = yel0*2
-
-            traj = yel0 + yel0/2
+            #ideal_traj = yel0 + yel0*2
+            #traj = yel0 + yel0/2 + 29 
+            #ideal_traj = (140)
+            traj = (yel0 + 280)/2 - 3  
         elif yel0 == 0:
             #traj = error_white/2
-            traj =  error_white - white0/2 #error_white/2
+            #traj = error_white/3
+           # traj =  error_white - white0/2 #error_white/2
+           traj =  error_white - error_white/2 
+           
         else: 
             traj = (error_yell+error_white)/2
             ideal_traj = (342/2)

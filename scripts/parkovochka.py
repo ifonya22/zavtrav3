@@ -68,7 +68,7 @@ if __name__ == '__main__':
         try:
             if(parking == True):
                 print("start parking mission")
-                rospy.sleep(8)      #9
+                rospy.sleep(8.6)      #9
                 print(distance)
                 if(distance > 1 or distance == 0):                               
                     do_parking()
